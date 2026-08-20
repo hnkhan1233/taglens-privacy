@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TagLens — Privacy Policy</title>
+<meta name="description" content="Privacy policy for the TagLens Chrome extension. TagLens has no server: nothing it records leaves your browser.">
+<style>
+  :root {
+    --bg:#F4F6F9; --surface:#FFFFFF; --ink:#111823; --muted:#54617A;
+    --line:#DDE3EC; --accent:#BE3A3A; --teal:#0E8C7F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0B1220; --surface:#111A2A; --ink:#E7EDF6; --muted:#9AA8BC;
+            --line:#1E2A3D; --accent:#E06A6A; --teal:#2FC3B0; }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:47rem; margin:0 auto; padding:56px 24px 88px; }
+  header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  .mark { width:34px; height:34px; border-radius:9px; flex:none; }
+  h1 { font-size:clamp(26px,4vw,34px); letter-spacing:-.02em; margin:0; }
+  .updated { color:var(--muted); font-size:14px; margin:0 0 34px; }
+  h2 { font-size:20px; letter-spacing:-.01em; margin:38px 0 10px; }
+  p, li { color:var(--ink); }
+  p { margin:0 0 14px; }
+  ul { margin:0 0 14px; padding-left:22px; }
+  li { margin-bottom:7px; }
+  strong { font-weight:650; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em;
+         background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
+  .lead {
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--teal);
+    border-radius:0 8px 8px 0; padding:18px 20px; margin:0 0 8px;
+  }
+  .lead p:last-child { margin-bottom:0; }
+  a { color:var(--accent); }
+  footer { margin-top:52px; padding-top:22px; border-top:1px solid var(--line);
+           color:var(--muted); font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img class="mark" src="icon128.png" alt="" width="34" height="34">
+    <h1>TagLens — Privacy Policy</h1>
+  </header>
+  <p class="updated">Last updated: 20 August 2026</p>
+
+  <p>TagLens is a developer diagnostic tool. It records the analytics activity of a web page you are
+  visiting so you can see what your tracking did and did not send. This policy describes exactly what it
+  handles and where that data goes.</p>
+
+  <h2>The short version</h2>
+  <div class="lead">
+    <p><strong>TagLens does not have a server.</strong> Nothing it records is transmitted anywhere. There is
+    no account, no login, no telemetry, no analytics on the extension itself, and no third party receives
+    any of it. Everything the extension captures stays in your own browser's storage on your own machine.</p>
+  </div>
+
+  <h2>What TagLens records</h2>
+  <p>While you are recording, and only on the tab you are recording, TagLens captures:</p>
+  <ul>
+    <li><strong><code>dataLayer</code> pushes</strong> made by the page, including their contents.</li>
+    <li><strong>Analytics requests the page sends</strong> — the URL, the decoded payload (event name and
+      parameters), and a summary of the request headers.</li>
+    <li><strong>The page's URL and title</strong>, so that captured events can be attributed to the page
+      that produced them.</li>
+    <li><strong>Your own settings and saved comparisons.</strong></li>
+  </ul>
+  <p>Because analytics payloads are the subject of the tool, a recording will contain whatever the site
+  under test chose to put into them. On some sites that can include identifiers such as a user or account
+  ID. TagLens surfaces this to you — that is frequently the defect being looked for — but it does not
+  extract, separate, or transmit it.</p>
+
+  <h2>Where it is stored</h2>
+  <p>In <code>chrome.storage.local</code> and <code>chrome.storage.session</code>, which are areas of your
+  own browser profile on your own device. The <code>unlimitedStorage</code> permission is requested so that
+  a long recording is not silently truncated.</p>
+  <p>Recordings persist until you delete them or remove the extension. Uninstalling the extension removes
+  them with it. TagLens has no ability to recover a recording once deleted, because it never held a copy.</p>
+
+  <h2>Network activity</h2>
+  <p>TagLens makes <strong>exactly one</strong> outbound network request in its entire codebase.</p>
+  <p>When it detects that the page has loaded a Google Tag Manager container, it performs a single
+  <code>GET</code> for that same container URL — the identical URL the page itself has already requested —
+  in order to read the container's public definition and determine which tags <em>should</em> have fired.
+  Depending on the site, that URL is either on <code>googletagmanager.com</code> or on the site's own
+  server-side Tag Manager domain. No data is sent with that request and no cookies or credentials are
+  attached to it.</p>
+  <p>There is no other <code>fetch</code>, no <code>XMLHttpRequest</code>, no <code>sendBeacon</code> and no
+  WebSocket anywhere in the extension.</p>
+
+  <h2>What TagLens never does</h2>
+  <ul>
+    <li>It never sends your recordings, browsing history, or any captured payload off your device.</li>
+    <li>It never sells or shares data, because it never receives any.</li>
+    <li>It never blocks, redirects, or modifies the requests it observes — it only reads them.</li>
+    <li>It contains no <code>eval</code>, no <code>new Function</code>, and no remotely-loaded code. All
+      code that runs is the code reviewed and shipped in the package.</li>
+  </ul>
+
+  <h2>The optional debugger permission</h2>
+  <p>The <code>debugger</code> permission is <strong>not</strong> requested when you install TagLens. It is
+  requested only if you press the replay button, and it is used solely to re-drive a recorded journey
+  through the page. If you decline it, replay is unavailable and every other feature continues to work. You
+  can revoke it at any time from Chrome's extension settings.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href="mailto:hnkhan123.hk@gmail.com">hnkhan123.hk@gmail.com</a></p>
+
+  <footer>This page exists to satisfy the Chrome Web Store's requirement for a publicly reachable privacy
+  policy. It describes the TagLens browser extension and nothing else.</footer>
+</div>
+</body>
+</html>
