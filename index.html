@@ -104,11 +104,18 @@
       code that runs is the code reviewed and shipped in the package.</li>
   </ul>
 
-  <h2>The optional debugger permission</h2>
-  <p>The <code>debugger</code> permission is <strong>not</strong> requested when you install TagLens. It is
-  requested only if you press the replay button, and it is used solely to re-drive a recorded journey
-  through the page. If you decline it, replay is unavailable and every other feature continues to work. You
-  can revoke it at any time from Chrome's extension settings.</p>
+  <h2>The debugger permission</h2>
+  <p>The <code>debugger</code> permission is granted when you install TagLens, and Chrome shows it to you at
+  that moment. It cannot be made optional: Chrome refuses to accept <code>debugger</code> in an extension's
+  <code>optional_permissions</code> and silently drops it, which is why an earlier version of TagLens that
+  tried to ask for it only on demand had a replay button that could never work.</p>
+  <p>It is used for one thing: re-driving a recorded journey when you press replay. TagLens opens a
+  <strong>new window of its own</strong> for the replay and attaches the debugger only to the tab inside it,
+  for the length of that run, detaching when the run ends or is stopped. It is never attached to a tab you
+  are browsing in, and it is not used at all while you are recording or reading a recording.</p>
+  <p>While the debugger is attached, Chrome displays its own banner across the top of the tab saying TagLens
+  is debugging it. If you would rather not grant it, the only way to decline is not to install the extension
+  &mdash; but nothing is sent anywhere either way; see &ldquo;What TagLens never does&rdquo; above.</p>
 
   <h2>Contact</h2>
   <p>Questions about this policy: <a href="mailto:hnkhan123.hk@gmail.com">hnkhan123.hk@gmail.com</a></p>
