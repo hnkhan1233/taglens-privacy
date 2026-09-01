@@ -49,7 +49,7 @@
     <img class="mark" src="icon128.png" alt="" width="34" height="34">
     <h1>TagLens — Privacy Policy</h1>
   </header>
-  <p class="updated">Last updated: 20 August 2026</p>
+  <p class="updated">Last updated: 1 September 2026</p>
 
   <p>TagLens is a developer diagnostic tool. It records the analytics activity of a web page you are
   visiting so you can see what your tracking did and did not send. This policy describes exactly what it
@@ -61,6 +61,44 @@
     no account, no login, no telemetry, no analytics on the extension itself, and no third party receives
     any of it. Everything the extension captures stays in your own browser's storage on your own machine.</p>
   </div>
+
+  <h2>What runs on every page</h2>
+  <p>TagLens is a diagnostic tool, so a small amount of it has to be in place <em>before</em> you decide to
+  record — otherwise pressing record would always miss the beginning of the page, which is the part being
+  diagnosed. On every page you open, in every frame, whether or not you are recording, TagLens:</p>
+  <ul>
+    <li><strong>Watches <code>dataLayer</code> in the page</strong> so that a push made in the first
+      milliseconds of a page load is not lost.</li>
+    <li><strong>Sets one attribute, <code>data-tag-assistant-prod-present</code>, on the page's root
+      element.</strong> This switches on a reporting channel that Google's own tag already carries and that
+      Google's Tag Assistant uses. It makes the tag write down, in the page, each event it sends, which is
+      what lets TagLens tell apart events that leave together in a single batched request. The attribute has
+      to be in place before Google's tag starts, and Google's tag reads it exactly once, so it cannot be
+      switched on only when you press record.
+      <ul>
+        <li>It does not change what the site sends. This was measured across 138 runs against Google's own
+          tag: the requests, their parameters, their values, the cookies and the headers are identical with
+          the attribute and without it.</li>
+        <li>What it does do is leave a record of that page's recent Google hits inside the page itself, where
+          other scripts on that same site could read it. If you would rather that did not happen on a
+          particular site, do not open that site with TagLens installed.</li>
+      </ul>
+    </li>
+    <li><strong>Asks the extension whether this tab is being recorded.</strong> Chrome attaches the page's
+      address to that question as sender information. TagLens does not read it, but the browser makes it
+      available, so the extension is capable of knowing the address of pages you open. The page's origin —
+      the site name, not the full address — is also held in session memory for the tab, and is gone when the
+      browser closes.</li>
+  </ul>
+  <p>Apart from those, nothing about the page or about you leaves a tab you have not recorded. Two things are
+  worth stating precisely, because "not recording" is not quite the same as "never recorded":</p>
+  <ul>
+    <li>Recording is armed <strong>per page</strong>. A page you were recording keeps sending until you leave
+      it, even after you press stop — the extension throws that away, and nothing from it is saved. It works
+      this way because Google's tag numbers its own records per page, and breaking that numbering half way
+      through makes TagLens distrust the whole page's evidence.</li>
+    <li>A <strong>new</strong> page opened after you stop sends nothing at all.</li>
+  </ul>
 
   <h2>What TagLens records</h2>
   <p>While you are recording, and only on the tab you are recording, TagLens captures:</p>
@@ -81,23 +119,35 @@
   <p>In <code>chrome.storage.local</code> and <code>chrome.storage.session</code>, which are areas of your
   own browser profile on your own device. The <code>unlimitedStorage</code> permission is requested so that
   a long recording is not silently truncated.</p>
-  <p>Recordings persist until you delete them or remove the extension. Uninstalling the extension removes
-  them with it. TagLens has no ability to recover a recording once deleted, because it never held a copy.</p>
+  <p>A recorded session is a <strong>draft</strong> until you press <em>save this session</em>. A draft is
+  written to disk as it goes — so that closing your browser or Chrome suspending the extension cannot lose it
+  mid-session — but it is not kept: it survives while a TagLens panel is open and is discarded when you close
+  the last TagLens view.</p>
+  <p>A session you save is kept until you delete it or remove the extension. Recordings made before saving
+  existed are kept for 30 days. Recordings a saved journey was cut from, and journeys used as a comparison
+  baseline, are kept for as long as the thing that refers to them. At most 100 recordings are held at once;
+  past that the oldest go first, and a saved recording is never one of them.</p>
+  <p>Uninstalling the extension removes them with it. TagLens has no ability to recover a recording once
+  deleted, because it never held a copy.</p>
 
   <h2>Network activity</h2>
   <p>TagLens makes <strong>exactly one</strong> outbound network request in its entire codebase.</p>
-  <p>When it detects that the page has loaded a Google Tag Manager container, it performs a single
-  <code>GET</code> for that same container URL — the identical URL the page itself has already requested —
+  <p>While you are recording, when it detects that the page has loaded a Google Tag Manager container, it
+  performs a single <code>GET</code> for that same container URL — the identical URL the page itself has already requested —
   in order to read the container's public definition and determine which tags <em>should</em> have fired.
   Depending on the site, that URL is either on <code>googletagmanager.com</code> or on the site's own
   server-side Tag Manager domain. No data is sent with that request and no cookies or credentials are
-  attached to it.</p>
+  attached to it. On a tab you are not recording, this request is not made at all.</p>
   <p>There is no other <code>fetch</code>, no <code>XMLHttpRequest</code>, no <code>sendBeacon</code> and no
   WebSocket anywhere in the extension.</p>
 
   <h2>What TagLens never does</h2>
   <ul>
     <li>It never sends your recordings, browsing history, or any captured payload off your device.</li>
+    <li><strong>Limited Use.</strong> TagLens's use of information received from Google APIs, and of any data
+      it handles, adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements.
+      It transfers that data nowhere, uses it for no purpose other than showing you the diagnosis you asked
+      for, sells it to nobody, and no human ever reads it, because it never leaves your machine.</li>
     <li>It never sells or shares data, because it never receives any.</li>
     <li>It never blocks, redirects, or modifies the requests it observes — it only reads them.</li>
     <li>It contains no <code>eval</code>, no <code>new Function</code>, and no remotely-loaded code. All
