@@ -49,7 +49,7 @@
     <img class="mark" src="icon128.png" alt="" width="34" height="34">
     <h1>TagLens — Privacy Policy</h1>
   </header>
-  <p class="updated">Last updated: 2 September 2026</p>
+  <p class="updated">Last updated: 17 September 2026</p>
 
   <p>TagLens is a developer diagnostic tool. It records the analytics activity of a web page you are
   visiting so you can see what your tracking did and did not send. This policy describes exactly what it
@@ -57,9 +57,20 @@
 
   <h2>The short version</h2>
   <div class="lead">
-    <p><strong>TagLens does not have a server.</strong> Nothing it records is transmitted anywhere. There is
-    no account, no login, no telemetry, no analytics on the extension itself, and no third party receives
-    any of it. Everything the extension captures stays in your own browser's storage on your own machine.</p>
+    <p><strong>TagLens does not have a server.</strong> Nothing it records is transmitted anywhere by
+    default. There is no account, no login, no telemetry, no analytics on the extension itself, and no third
+    party receives any of it. Everything the extension captures stays in your own browser's storage on your
+    own machine.</p>
+    <p>The one exception is a feature you switch on yourself: <strong>AI analysis</strong>, which lets you
+    put questions about a recording to an AI model using <strong>your own API key</strong>. When you use it,
+    TagLens sends that model a <em>fact sheet</em> about the recording — event names, how many times each
+    fired, whether each reached Google Analytics, the findings on the report, and the values the site put in
+    its data layer — page types, placements, search terms, product names and the like. It does not send a
+    person's identifiers: parameters that identify someone — email, phone, user, account, session and device
+    ids, addresses, and anything shaped like one — are listed by name only, and their values never leave
+    your machine. Nothing is sent until you type a question, and nothing at all is sent if you never connect
+    a key. The key is stored in your browser's local storage and is shown back to you only as its last four
+    characters.</p>
   </div>
 
   <h2>What runs on every page</h2>
@@ -161,24 +172,49 @@
   deleted, because it never held a copy.</p>
 
   <h2>Network activity</h2>
-  <p>TagLens makes <strong>exactly one</strong> outbound network request in its entire codebase.</p>
+  <p>TagLens makes <strong>exactly two kinds</strong> of outbound network request in its entire codebase,
+  and the second happens only if you connect a key to the <strong>AI analysis</strong> feature.</p>
   <p>While you are recording, when it detects that the page has loaded a Google Tag Manager container, it
-  performs a single <code>GET</code> for that same container URL — the identical URL the page itself has already requested —
-  in order to read the container's public definition and determine which tags <em>should</em> have fired.
-  That URL is on whichever host the page loaded the container from: usually
-  <code>googletagmanager.com</code> or the site's own server-side Tag Manager domain, but TagLens follows
-  the page rather than a list of approved hosts. No data is sent with that request and no cookies or credentials are
-  attached to it. On a tab you are not recording, this request is not made at all.</p>
+  performs a single <code>GET</code> for that container's public definition in order to determine which tags
+  <em>should</em> have fired. Where TagLens saw the page request the container, it fetches that same URL —
+  the identical URL the page itself has already requested, on whichever host the page loaded it from:
+  usually <code>googletagmanager.com</code> or the site's own server-side Tag Manager domain. Where the page
+  holds a container TagLens never saw requested (a container loaded through a first-party loader path), it
+  fetches the container's public definition from the URL the page's own script tag names, or failing that
+  from <code>googletagmanager.com</code> by the container's public id. No data is sent with that request and
+  no cookies or credentials are attached to it. On a tab you are not recording, this request is not made at
+  all.</p>
+  <p>The second is the <strong>AI analysis</strong> feature. With a key you have connected, TagLens sends
+  your question and the fact sheet described above to the endpoint you chose — Google AI Studio, or another
+  OpenAI-compatible endpoint you name — and shows you the answer. That request carries your key and nothing
+  about you or your browser beyond the fact sheet. What the provider does with what it receives is governed
+  by that provider's terms; on Google's free tier, for example, Google states that content may be used to
+  improve its products, and TagLens says so on the screen where you connect. No question is sent until you
+  ask one. When a question needs a row the fact sheet does not carry, the model may ask TagLens for rows by
+  event name and time window; TagLens answers with at most twenty rows per request, a few requests per
+  question, each row scrubbed by the same rules as the fact sheet, and the answer's footer names every
+  lookup it made.</p>
+  <p>The <strong>ask ChatGPT</strong> button on the header (the same press as <strong>for ChatGPT</strong>
+  in the export menu) saves the raw export on your device — every recorded event with its full payload,
+  values as recorded, the same file as the json export — and opens chatgpt.com with TagLens's reading
+  instructions typed into the message box; you attach the file there yourself. It exists so you can ask
+  about your own recording without connecting a key. TagLens sends nothing; the file leaves your device only
+  when you upload it, under that service's terms.</p>
   <p>There is no other <code>fetch</code>, no <code>XMLHttpRequest</code>, no <code>sendBeacon</code> and no
   WebSocket anywhere in the extension.</p>
 
   <h2>What TagLens never does</h2>
   <ul>
-    <li>It never sends your recordings, browsing history, or any captured payload off your device.</li>
+    <li>It never sends your recordings, browsing history, or any captured payload off your device. The
+      <strong>AI analysis</strong> feature sends a fact sheet of names, counts and values, and rows the model
+      asks for under the same rules — never a whole recording, never a raw payload, never an identifier —
+      and only to an endpoint you chose, with a key you supplied, when you ask a question.</li>
     <li><strong>Limited Use.</strong> TagLens's use of information received from Google APIs, and of any data
       it handles, adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements.
       It transfers that data nowhere, uses it for no purpose other than showing you the diagnosis you asked
-      for, sells it to nobody, and no human ever reads it, because it never leaves your machine.</li>
+      for, sells it to nobody, and no human at TagLens ever reads it, because it never reaches TagLens: it
+      stays on your machine, and the only thing that ever leaves is the fact sheet the <strong>AI
+      analysis</strong> feature sends to the AI endpoint you chose.</li>
     <li>It never sells or shares data, because it never receives any.</li>
     <li>It never blocks, redirects, or modifies the requests it observes — it only reads them.</li>
     <li>It contains no <code>eval</code>, no <code>new Function</code>, and no remotely-loaded code. All
