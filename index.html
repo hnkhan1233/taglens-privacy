@@ -76,14 +76,19 @@
   <h2>Optional page checks (version 1.2.0)</h2>
   <p>The page reader is off by default. You enable it separately for each website, and it reads only
   while that tab is recording. It reads short text, headings, image descriptions, selected HTML
-  attributes, links, and visibility measurements from candidate page blocks. It does not take screenshots
+  attributes and nearby element IDs, links, and visibility measurements from candidate page blocks. It does not take screenshots
   or read form values, editable areas, or deliberately hidden text. Page and resource addresses omit query
   strings and fragments. Up to 100 observations are stored with a recording; they follow the same
   save/delete rules and can appear in JSON and report exports. Site opt-ins and tracking rules are stored
   locally until you remove them.</p>
+  <p>Tracking suggestions are computed locally from the recording. If you press
+  <strong>Preview image</strong>, TagLens requests that recorded image address from its host,
+  without cookies or a referrer, and displays the response locally. The host sees the image request
+  and your IP address. Previews are limited to 2 MB, are not saved in the recording, and may show a
+  newer image than the one originally seen. No image is sent to Jev. <strong>Show on website</strong>
+  scrolls to and briefly outlines the recorded block if it is still present.</p>
   <p><strong>Jev classification is a separate, explicit action.</strong> If you supply a TypeSafe API key,
-  select blocks, approve sending their text, and press the classify button, TagLens sends at most 12
-  selected blocks to <code>https://api.typesafe.ai/v1/systemone</code>. The request contains short titles
+  select a block, approve sending its text, and press Ask Jev, TagLens sends that block to <code>https://api.typesafe.ai/v1/systemone</code>. The request contains short titles
   and text, link labels, image descriptions, and HTML attribute names. It excludes page addresses,
   link/image URLs, selector strings, attribute values, recordings, and analytics events. Recognizable
   emails, phone numbers, and common credential patterns are masked. This is not a guarantee that all
@@ -217,6 +222,8 @@
   <p>The third is the optional <strong>Jev classification</strong> request described under Page checks
   above. Selected, previewed page text goes to TypeSafe only when you approve it and press classify;
   it never runs automatically in the background.</p>
+  <p>The fourth is the optional <strong>Preview image</strong> request described above. It fetches only
+  an image address already captured in the recording, after you request it.</p>
   <p>The <strong>ask ChatGPT</strong> button on the header (the same press as <strong>for ChatGPT</strong>
   in the export menu) saves the raw export on your device — every recorded event with its full payload,
   values as recorded, the same file as the json export — and opens chatgpt.com with TagLens's reading
