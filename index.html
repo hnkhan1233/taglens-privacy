@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TagLens — Privacy Policy</title>
-<meta name="description" content="Privacy policy for TagLens. Recordings stay local by default; optional AI requests send only the data you explicitly choose to submit.">
+<meta name="description" content="Privacy policy for the TagLens Chrome extension. TagLens has no server: nothing it records leaves your browser.">
 <style>
   :root {
     --bg:#F4F6F9; --surface:#FFFFFF; --ink:#111823; --muted:#54617A;
@@ -49,7 +49,7 @@
     <img class="mark" src="icon128.png" alt="" width="34" height="34">
     <h1>TagLens — Privacy Policy</h1>
   </header>
-  <p class="updated">Last updated: 24 September 2026</p>
+  <p class="updated">Last updated: 1 October 2026</p>
 
   <p>TagLens is a developer diagnostic tool. It records the analytics activity of a web page you are
   visiting so you can see what your tracking did and did not send. This policy describes exactly what it
@@ -61,7 +61,7 @@
     default. There is no account, no login, no telemetry, no analytics on the extension itself, and no third
     party receives any of it. Everything the extension captures stays in your own browser's storage on your
     own machine.</p>
-    <p>One exception is a feature you switch on yourself: <strong>AI analysis</strong>, which lets you
+    <p>The one exception is a feature you switch on yourself: <strong>AI analysis</strong>, which lets you
     put questions about a recording to an AI model using <strong>your own API key</strong>. When you use it,
     TagLens sends that model a <em>fact sheet</em> about the recording — event names, how many times each
     fired, whether each reached Google Analytics, the findings on the report, and the values the site put in
@@ -72,30 +72,6 @@
     a key. The key is stored in your browser's local storage and is shown back to you only as its last four
     characters.</p>
   </div>
-
-  <h2>Optional page checks (version 1.2.0)</h2>
-  <p>The page reader is off by default. You enable it separately for each website, and it reads only
-  while that tab is recording. It reads short text, headings, image descriptions, selected HTML
-  attributes and nearby element IDs, links, and visibility measurements from candidate page blocks. It does not take screenshots
-  or read form values, editable areas, or deliberately hidden text. Page and resource addresses omit query
-  strings and fragments. Up to 100 observations are stored with a recording; they follow the same
-  save/delete rules and can appear in JSON and report exports. Site opt-ins and tracking rules are stored
-  locally until you remove them.</p>
-  <p>Tracking suggestions are computed locally from the recording. If you press
-  <strong>Preview image</strong>, TagLens requests that recorded image address from its host,
-  without cookies or a referrer, and displays the response locally. The host sees the image request
-  and your IP address. Previews are limited to 2 MB, are not saved in the recording, and may show a
-  newer image than the one originally seen. No image is sent to Jev. <strong>Show on website</strong>
-  scrolls to and briefly outlines the recorded block if it is still present.</p>
-  <p><strong>Jev classification is a separate, explicit action.</strong> If you supply a TypeSafe API key,
-  select a block, approve sending its text, and press Ask Jev, TagLens sends that block to <code>https://api.typesafe.ai/v1/systemone</code>. The request contains short titles
-  and text, link labels, image descriptions, and HTML attribute names. It excludes page addresses,
-  link/image URLs, selector strings, attribute values, recordings, and analytics events. Recognizable
-  emails, phone numbers, and common credential patterns are masked. This is not a guarantee that all
-  personal information has been removed: other names or personal details may remain. The screen shows
-  a preview before sending. TypeSafe's data terms apply to the material you send. The key is held in
-  Chrome local storage, is never returned to the screen, and is excluded from exports. Remove it using
-  the Page checks screen. Saving a key or enabling page reading does not send a request to Jev.</p>
 
   <h2>What runs on every page</h2>
   <p>TagLens is a diagnostic tool, so a small amount of it has to be in place <em>before</em> you decide to
@@ -120,8 +96,7 @@
       </ul>
     </li>
     <li><strong>Asks the extension whether this tab is being recorded.</strong> Chrome attaches the page's
-      address to that question as sender information. The optional page reader uses its origin to check
-      the site's opt-in setting, and the browser makes it
+      address to that question as sender information. TagLens does not read it, but the browser makes it
       available, so the extension is capable of knowing the address of pages you open. The page's origin —
       the site name, not the full address — is also held in session memory for the tab, and is gone when the
       browser closes. Separately, whenever you open TagLens on a tab it writes that tab's site name to its
@@ -156,6 +131,11 @@
     <li><strong>Analytics requests the page sends</strong> — the URL, the decoded payload (event name and
       parameters), and a summary of the request headers. The summary counts sizes and lists the names of the
       largest cookies sent with the request. It never keeps a cookie's value.</li>
+    <li><strong>How each of those requests ended</strong>, as Chrome reports it to the extension: the server's status
+      code, or the network error when it never got through (blocked by the browser or an ad blocker, refused by
+      the server, or failed to connect). When the site's own security policy (CSP) blocks a request or one of
+      Google's tag scripts, TagLens records the address that was blocked and the policy rule that blocked it. It
+      also notes Chrome's internal ID for each page, so a block on one page is not counted against another.</li>
     <li><strong>The page's address</strong>, so that captured events can be attributed to the page that
       produced them. TagLens does not read the page's title; a title appears in a recording only if the
       site's own analytics put it in a request.</li>
@@ -197,8 +177,8 @@
   deleted, because it never held a copy.</p>
 
   <h2>Network activity</h2>
-  <p>TagLens fetches public tracking definitions and supports two optional AI requests. AI requests
-  happen only after you connect a key and explicitly ask for analysis or classification.</p>
+  <p>TagLens makes <strong>exactly two kinds</strong> of outbound network request in its entire codebase,
+  and the second happens only if you connect a key to the <strong>AI analysis</strong> feature.</p>
   <p>While you are recording, when it detects that the page has loaded a Google Tag Manager container, it
   performs a single <code>GET</code> for that container's public definition in order to determine which tags
   <em>should</em> have fired. Where TagLens saw the page request the container, it fetches that same URL —
@@ -219,11 +199,6 @@
   event name and time window; TagLens answers with at most twenty rows per request, a few requests per
   question, each row scrubbed by the same rules as the fact sheet, and the answer's footer names every
   lookup it made.</p>
-  <p>The third is the optional <strong>Jev classification</strong> request described under Page checks
-  above. Selected, previewed page text goes to TypeSafe only when you approve it and press classify;
-  it never runs automatically in the background.</p>
-  <p>The fourth is the optional <strong>Preview image</strong> request described above. It fetches only
-  an image address already captured in the recording, after you request it.</p>
   <p>The <strong>ask ChatGPT</strong> button on the header (the same press as <strong>for ChatGPT</strong>
   in the export menu) saves the raw export on your device — every recorded event with its full payload,
   values as recorded, the same file as the json export — and opens chatgpt.com with TagLens's reading
@@ -235,8 +210,7 @@
 
   <h2>What TagLens never does</h2>
   <ul>
-    <li>It never automatically uploads your recordings or browsing history. <strong>Page checks</strong>
-      sends selected, previewed text to TypeSafe only on your explicit classification request. The
+    <li>It never sends your recordings, browsing history, or any captured payload off your device. The
       <strong>AI analysis</strong> feature sends a fact sheet of names, counts and values, and rows the model
       asks for under the same rules — never a whole recording, never a raw payload, never an identifier —
       and only to an endpoint you chose, with a key you supplied, when you ask a question.</li>
@@ -244,8 +218,8 @@
       it handles, adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements.
       It transfers that data nowhere, uses it for no purpose other than showing you the diagnosis you asked
       for, sells it to nobody, and no human at TagLens ever reads it, because it never reaches TagLens: it
-      stays on your machine except for the explicit AI analysis and Jev classification requests described
-      above, which go to your chosen provider.</li>
+      stays on your machine, and the only thing that ever leaves is the fact sheet the <strong>AI
+      analysis</strong> feature sends to the AI endpoint you chose.</li>
     <li>It never sells or shares data, because it never receives any.</li>
     <li>It never blocks, redirects, or modifies the requests it observes — it only reads them.</li>
     <li>It contains no <code>eval</code>, no <code>new Function</code>, and no remotely-loaded code. All
