@@ -49,7 +49,7 @@
     <img class="mark" src="icon128.png" alt="" width="34" height="34">
     <h1>TagLens — Privacy Policy</h1>
   </header>
-  <p class="updated">Last updated: 1 October 2026</p>
+  <p class="updated">Last updated: 4 November 2026</p>
 
   <p>TagLens is a developer diagnostic tool. It records the analytics activity of a web page you are
   visiting so you can see what your tracking did and did not send. This policy describes exactly what it
@@ -57,11 +57,15 @@
 
   <h2>The short version</h2>
   <div class="lead">
-    <p><strong>TagLens does not have a server.</strong> Nothing it records is transmitted anywhere by
-    default. There is no account, no login, no telemetry, no analytics on the extension itself, and no third
-    party receives any of it. Everything the extension captures stays in your own browser's storage on your
-    own machine.</p>
-    <p>The one exception is a feature you switch on yourself: <strong>AI analysis</strong>, which lets you
+    <p><strong>TagLens does not have a server.</strong> Nothing it records is transmitted anywhere. There
+    is no account and no login, and no third party receives any of it. Everything the extension captures
+    stays in your own browser's storage on your own machine.</p>
+    <p>TagLens asks you one question about itself, once: whether it may <strong>count you as a user</strong>.
+    If you say yes, it sends one small anonymous signal a day — which features you used and which version —
+    and nothing about any site. If you say no, or never answer, it sends nothing. See
+    <a href="#counted">Being counted</a> below.</p>
+    <p>Beyond that count, the only other thing that can leave your machine is a feature you switch on
+    yourself: <strong>AI analysis</strong>, which lets you
     put questions about a recording to an AI model using <strong>your own API key</strong>. When you use it,
     TagLens sends that model a <em>fact sheet</em> about the recording — event names, how many times each
     fired, whether each reached Google Analytics, the findings on the report, and the values the site put in
@@ -147,7 +151,7 @@
       storing information on your device.</strong> This comes from the site's own consent API and explains a
       recording that is empty because nothing was allowed to fire. It is three true-or-false values, kept
       with the recording; no identifier from the banner is stored.</li>
-    <li><strong>Your own settings and saved comparisons.</strong></li>
+    <li><strong>Your own settings and saved comparisons</strong>, including your answer to being counted.</li>
   </ul>
   <p>Because analytics payloads are the subject of the tool, a recording will contain whatever the site
   under test chose to put into them. On some sites that can include identifiers such as a user or account
@@ -177,8 +181,9 @@
   deleted, because it never held a copy.</p>
 
   <h2>Network activity</h2>
-  <p>TagLens makes <strong>exactly two kinds</strong> of outbound network request in its entire codebase,
-  and the second happens only if you connect a key to the <strong>AI analysis</strong> feature.</p>
+  <p>TagLens makes <strong>exactly three kinds</strong> of outbound network request in its entire codebase.
+  The second happens only if you connect a key to the <strong>AI analysis</strong> feature, and the third only
+  if you answered yes to being counted (see <a href="#counted">Being counted</a> below).</p>
   <p>While you are recording, when it detects that the page has loaded a Google Tag Manager container, it
   performs a single <code>GET</code> for that container's public definition in order to determine which tags
   <em>should</em> have fired. Where TagLens saw the page request the container, it fetches that same URL —
@@ -208,19 +213,48 @@
   <p>There is no other <code>fetch</code>, no <code>XMLHttpRequest</code>, no <code>sendBeacon</code> and no
   WebSocket anywhere in the extension.</p>
 
+  <h2 id="counted">Being counted</h2>
+  <p>The Chrome Web Store can say how many people installed TagLens; it cannot say how many open it. So
+  TagLens asks you, once, on its live screen: <em>Count you as a TagLens user?</em> Nothing is sent until you
+  answer <strong>count me</strong>. <em>No</em> sends nothing, and so does never answering. You can change
+  your answer at any time under <strong>view ▾ › settings › count me as a user</strong>.</p>
+  <p>If you said yes, then the first time each day you do one of six things — open TagLens, start a
+  recording, see what a container expects, replay a flow, ask the AI, or export — TagLens sends one small
+  request to Google Analytics, to a property that belongs to TagLens. It carries:</p>
+  <ul>
+    <li>the name of that feature (<code>tl_open</code>, <code>tl_record</code>, <code>tl_container</code>,
+      <code>tl_replay</code>, <code>tl_ask</code>, <code>tl_export</code>);</li>
+    <li>the TagLens version, and whether this copy came from the Web Store;</li>
+    <li>the week you said yes;</li>
+    <li>a random id made on your computer when you said yes. It is tied to nothing — not your Google
+      account, not your machine, not the sites you visit — and it exists only so that the same person is not
+      counted as a new one each day. Removing the extension removes it.</li>
+  </ul>
+  <p>It never carries the site, its address, an event, a parameter, a value, a payload, a recording, or
+  anything typed. The same feature is sent at most once a day, so the numbers mean <em>people who did this
+  today</em>, not how often. Google receives the request from your connection, as it does any request to
+  Google; TagLens reads only the counts, uses them for nothing but knowing how many people use TagLens and
+  which parts, and does not sell or share them. If a later version ever changes what is sent, it asks the
+  question again before sending anything new.</p>
+
   <h2>What TagLens never does</h2>
   <ul>
     <li>It never sends your recordings, browsing history, or any captured payload off your device. The
       <strong>AI analysis</strong> feature sends a fact sheet of names, counts and values, and rows the model
       asks for under the same rules — never a whole recording, never a raw payload, never an identifier —
-      and only to an endpoint you chose, with a key you supplied, when you ask a question.</li>
+      and only to an endpoint you chose, with a key you supplied, when you ask a question. Being counted, if
+      you said yes, sends a feature name, a version, a week and a random id — never a site, an address or a
+      recording.</li>
     <li><strong>Limited Use.</strong> TagLens's use of information received from Google APIs, and of any data
       it handles, adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements.
       It transfers that data nowhere, uses it for no purpose other than showing you the diagnosis you asked
       for, sells it to nobody, and no human at TagLens ever reads it, because it never reaches TagLens: it
-      stays on your machine, and the only thing that ever leaves is the fact sheet the <strong>AI
-      analysis</strong> feature sends to the AI endpoint you chose.</li>
-    <li>It never sells or shares data, because it never receives any.</li>
+      stays on your machine, and the only things that ever leave are the fact sheet the <strong>AI
+      analysis</strong> feature sends to the AI endpoint you chose and, if you said yes, the count described
+      under <a href="#counted">Being counted</a>.</li>
+    <li>It never sells or shares data. The only data it ever receives is the count under
+      <a href="#counted">Being counted</a> — anonymous, from people who said yes, used for nothing but knowing
+      how many people use TagLens and which parts.</li>
     <li>It never blocks, redirects, or modifies the requests it observes — it only reads them.</li>
     <li>It contains no <code>eval</code>, no <code>new Function</code>, and no remotely-loaded code. All
       code that runs is the code reviewed and shipped in the package.</li>
